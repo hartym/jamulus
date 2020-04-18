@@ -382,7 +382,7 @@ public slots:
         ServerListManager.StoreRegistrationResult ( eResult );
     }
 
-    void OnSvrRegStatusChanged() { emit SvrRegStatusChanged(); }
+    void OnSvrRegStatusChanged();
 
     void OnCLUnregisterServerReceived ( CHostAddress InetAddr )
     {

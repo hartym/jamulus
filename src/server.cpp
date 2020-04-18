@@ -834,6 +834,47 @@ void CServer::OnProtcolCLMessageReceived ( int              iRecID,
                                                       RecHostAddr );
 }
 
+void CServer::OnSvrRegStatusChanged()
+{
+    QString strLogStr = "Server RegStatus Changed: ";
+
+    switch ( ServerListManager.GetSvrRegStatus() )
+    {
+        case SRS_UNREGISTERED:
+            strLogStr.append("Unregistered");
+            break;
+
+        case SRS_BAD_ADDRESS:
+            strLogStr.append("Bad address");
+            break;
+
+        case SRS_REQUESTED:
+            strLogStr.append("Registration requested");
+            break;
+
+        case SRS_TIME_OUT:
+            strLogStr.append("Registration failed");
+            break;
+
+        case SRS_UNKNOWN_RESP:
+            strLogStr.append("Check server version, retrying");
+            break;
+
+        case SRS_REGISTERED:
+            strLogStr.append("Registered");
+            break;
+
+        case SRS_CENTRAL_SVR_FULL:
+            strLogStr.append("Central Server full");
+            break;
+    }
+
+    QTextStream& tsConsoleStream = *( ( new ConsoleWriterFactory() )->get() );
+    tsConsoleStream << strLogStr << endl; // on console
+
+    emit SvrRegStatusChanged();
+}
+
 void CServer::OnCLDisconnection ( CHostAddress InetAddr )
 {
     // check if the given address is actually a client which is connected to
