@@ -81,6 +81,7 @@ int main ( int argc, char** argv )
     QString      strConnOnStartupAddress     = "";
     QString      strIniFileName              = "";
     QString      strHTMLStatusFileName       = "";
+    QString      strCSVFileName              = "";
     QString      strLoggingFileName          = "";
     QString      strRecordingDirName         = "";
     QString      strCentralServer            = "";
@@ -327,6 +328,22 @@ int main ( int argc, char** argv )
             strHTMLStatusFileName = strArgument;
             tsConsole << "- HTML status file name: " << strHTMLStatusFileName << endl;
             CommandLineOptions << "--htmlstatus";
+            continue;
+        }
+
+
+        // CSV status file ----------------------------------------------------
+        if ( GetStringArgument ( tsConsole,
+                                 argc,
+                                 argv,
+                                 i,
+                                 "--csvfile", // no short form
+                                 "--csvfile",
+                                 strArgument ) )
+        {
+            strCSVFileName = strArgument;
+            tsConsole << "- CSV file name: " << strCSVFileName << endl;
+            CommandLineOptions << "--csvfile";
             continue;
         }
 
@@ -690,6 +707,7 @@ int main ( int argc, char** argv )
                              strLoggingFileName,
                              iPortNumber,
                              strHTMLStatusFileName,
+                             strCSVFileName,
                              strCentralServer,
                              strServerInfo,
                              strServerListFilter,
@@ -815,6 +833,7 @@ QString UsageArguments ( char **argv )
         "  -j, --nojackconnect   disable auto Jack connections\n"
         "  --ctrlmidich          MIDI controller channel to listen\n"
         "  --clientname          client name (window title and jack client name)\n"
+        "  --csvfile             enable CSV status file, set file name\n"
         "\nExample: " + QString ( argv[0] ) + " -s --inifile myinifile.ini\n";
 }
 

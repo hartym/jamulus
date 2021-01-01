@@ -173,6 +173,7 @@ public:
               const QString&     strLoggingFileName,
               const quint16      iPortNumber,
               const QString&     strHTMLStatusFileName,
+              const QString&     strCSVFileName,
               const QString&     strCentralServer,
               const QString&     strServerInfo,
               const QString&     strServerListFilter,
@@ -298,6 +299,8 @@ protected:
     inline void connectChannelSignalsToServerSlots();
 
     void WriteHTMLChannelList();
+    
+    void WriteCSVChannelList();
 
     void DecodeReceiveDataBlocks ( const int iStartChanCnt,
                                    const int iStopChanCnt,
@@ -380,6 +383,10 @@ protected:
     // HTML file server status
     bool                       bWriteStatusHTMLFile;
     QString                    strServerHTMLFileListName;
+    
+    // CSV file server status
+    bool                       bWriteStatusCSVFile;
+    QString                    strServerCSVFileListName;
 
     CHighPrecisionTimer        HighPrecisionTimer;
 

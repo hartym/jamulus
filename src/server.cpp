@@ -223,6 +223,7 @@ CServer::CServer ( const int          iNewMaxNumChan,
                    const QString&     strLoggingFileName,
                    const quint16      iPortNumber,
                    const QString&     strHTMLStatusFileName,
+                   const QString&     strCSVFileName,
                    const QString&     strCentralServer,
                    const QString&     strServerInfo,
                    const QString&     strServerListFilter,
@@ -241,6 +242,8 @@ CServer::CServer ( const int          iNewMaxNumChan,
     iFrameCount                 ( 0 ),
     bWriteStatusHTMLFile        ( false ),
     strServerHTMLFileListName   ( strHTMLStatusFileName ),
+    bWriteStatusCSVFile         ( false ),
+    strServerCSVFileListName    ( strCSVFileName ),
     HighPrecisionTimer          ( bNUseDoubleSystemFrameSize ),
     ServerListManager           ( iPortNumber,
                                   strCentralServer,
@@ -382,6 +385,14 @@ CServer::CServer ( const int          iNewMaxNumChan,
         // activate HTML file writing and write initial file
         bWriteStatusHTMLFile = true;
         WriteHTMLChannelList();
+    }
+
+    // CSV file writing
+    if ( !strServerCSVFileListName.isEmpty() )
+    {
+        // activate CSV file writing and write initial file
+        bWriteStatusCSVFile = true;
+        WriteCSVChannelList();
     }
 
     // manage welcome message: if the welcome message is a valid link to a local
@@ -1370,6 +1381,11 @@ void CServer::CreateAndSendChanListForAllConChannels()
     {
         WriteHTMLChannelList();
     }
+    // create status CSV file if enabled
+    if ( bWriteStatusCSVFile )
+    {
+        WriteCSVChannelList();
+    }
 }
 
 void CServer::CreateAndSendChanListForThisChan ( const int iCurChanID )
@@ -1642,6 +1658,39 @@ void CServer::WriteHTMLChannelList()
 {
     // prepare file and stream
     QFile serverFileListFile ( strServerHTMLFileListName );
+
+    if ( serverFileListFile.open ( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+        QTextStream streamFileOut ( &serverFileListFile );
+
+        // depending on number of connected clients write list
+        if ( GetNumberOfConnectedClients() == 0 )
+        {
+            // no clients are connected -> empty server
+            streamFileOut << "  No client connected\n";
+        }
+        else
+        {
+            streamFileOut << "<ul>\n";
+
+            // write entry for each connected client
+            for ( int i = 0; i < iMaxNumChannels; i++ )
+            {
+                if ( vecChannels[i].IsConnected() )
+                {
+                    streamFileOut << "  <li>" << vecChannels[i].GetName().toHtmlEscaped() << "</li>\n";
+                }
+            }
+
+            streamFileOut << "</ul>\n";
+        }
+    }
+}
+
+void CServer::WriteCSVChannelList()
+{
+    // prepare file and stream
+    QFile serverFileListFile ( strServerCSVFileListName );
 
     if ( serverFileListFile.open ( QIODevice::WriteOnly | QIODevice::Text ) )
     {
