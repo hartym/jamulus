@@ -1729,6 +1729,7 @@ void CServer::WriteCSVChannelList()
                         break;
                 }
                 streamFileOut << "\n";
+
             }
         }
     }
